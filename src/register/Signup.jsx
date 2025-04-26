@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const Signup = () => {
+  const navigate = useNavigate();
   const formObj = {
     firstName: "",
     lastName: "",
@@ -12,6 +16,7 @@ const Signup = () => {
     confirmPassword: "",
   };
   const [formData, setFormData] = useState(formObj);
+  const [loading, setLoading] = useState(false);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -46,6 +51,8 @@ const Signup = () => {
       );
     }
 
+    setLoading(true);
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -59,8 +66,22 @@ const Signup = () => {
       );
       const user = createUser.user;
 
-      await setDoc(doc(db))
-    } catch (error) {}
+      //saving additional user info
+      await setDoc(doc(db, "users", user.uid), {
+        user_id: user.uid,
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        role: formData.role,
+        createdAt: new Date(),
+      });
+      console.log(`User registgered and saved!`);
+      toast.success("Account Created Successfully");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
   };
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 items-center h-screen px-20">
@@ -74,7 +95,7 @@ const Signup = () => {
       <div>
         <h1>Sign Up</h1>
 
-        <Form>
+        <Form onSubmit={handleSignUp}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>First Name</Form.Label>
             <Form.Control
@@ -141,7 +162,9 @@ const Signup = () => {
               onChange={handleOnChange}
             />
           </Form.Group>
-          <Button className="button">Sign Up</Button>
+          <button type="submit" className="button" disabled={loading}>
+            {loading ? "Signing up...." : "Sign Up"}
+          </button>
         </Form>
       </div>
     </div>
