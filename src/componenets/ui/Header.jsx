@@ -9,7 +9,7 @@ const Header = () => {
           alt="task"
           className="w-10 h-10"
         />
-        <h1>Task Manager</h1>
+        <h1>Todo</h1>
       </div>
       <div>
         <input

@@ -165,6 +165,9 @@ const Signup = () => {
           <button type="submit" className="button" disabled={loading}>
             {loading ? "Signing up...." : "Sign Up"}
           </button>
+          <p>
+            Already have an account?<a href="/login">login </a>
+          </p>
         </Form>
       </div>
     </div>
