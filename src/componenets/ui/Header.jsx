@@ -1,30 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../../firebaseConfig";
-import { getDoc, doc } from "firebase/firestore";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
+import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../context/userContext";
 const Header = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { userInfo, loading } = Context();
   const navigate = useNavigate();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUserInfo(userSnap.data());
-        } else {
-          console.log(`no user`);
-        }
-      } else {
-        console.log(`no user logged in.`);
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -42,11 +22,11 @@ const Header = () => {
           placeholder="Search Task...."
         />
       </div>
-      <div>
+      <div className="justify-items-end">
         {loading ? (
           <p>Loading...</p> // jab tak auth response nahi deta
         ) : userInfo ? (
-          <div className="flex justify-end items-center gap-6">
+          <div className="flex  items-center gap-6">
             <p>{userInfo.firstName}</p>
             <button className="button w-auto" onClick={handleLogout}>
               Logout
