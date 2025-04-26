@@ -10,6 +10,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
@@ -83,10 +84,18 @@ export const UserProvider = ({ children }) => {
 
   const deleteTaskId = async (id) => {
     try {
-      await deleteDoc(doc(db, "tasks", id));
-      getTasks();
+      const taskRef = doc(db, "tasks", id);
+      const tasksSnap = await getDoc(taskRef);
+      if (tasksSnap.exists()) {
+        const taskData = tasksSnap.data();
+        await addDoc(collection, "trash", taskData);
+        await deleteDoc(taskRef);
+        toast.success("Task moved to Trash!");
+        getTasks();
+      }
     } catch (error) {
-      console.error("Error deleting task:", error);
+      console.error("Error moving task to Trash:", error);
+      toast.error("Failed to move to Trash!");
     }
   };
 
@@ -111,7 +120,8 @@ export const UserProvider = ({ children }) => {
       getTasks();
       closeModal();
       setEditTaskId(null);
-      setTaskData({   // Clear input fields
+      setTaskData({
+        // Clear input fields
         taskTitle: "",
         assignedTo: "",
         taskStatus: "",
@@ -138,8 +148,7 @@ export const UserProvider = ({ children }) => {
         deleteTaskId,
         startEditTask,
         updateTask,
-        editTaskId
-
+        editTaskId,
       }}
     >
       {children}
