@@ -7,6 +7,7 @@ const Header = () => {
         <img
           src="https://cdn-icons-png.flaticon.com/512/906/906334.png"
           alt="task"
+          className="w-10 h-10"
         />
         <h1>Task Manager</h1>
       </div>

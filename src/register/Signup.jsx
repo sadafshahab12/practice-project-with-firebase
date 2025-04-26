@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, Form, Toast } from "react-bootstrap";
-import { auth, db } from "../firebaseConfig";
+import { Form, Toast } from "react-bootstrap";
+import { auth, db } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +77,7 @@ const Signup = () => {
       });
       console.log(`User registgered and saved!`);
       toast.success("Account Created Successfully");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -96,9 +96,9 @@ const Signup = () => {
         <h1>Sign Up</h1>
 
         <Form onSubmit={handleSignUp}>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
+          <div className="mb-3">
+            <label>First Name</label>
+            <input
               type="text"
               placeholder="First Name"
               className="input"
@@ -106,10 +106,10 @@ const Signup = () => {
               value={formData.firstName}
               onChange={handleOnChange}
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
+          </div>
+          <div className="mb-3">
+            <label>Last Name</label>
+            <input
               type="text"
               placeholder="Last Name"
               className="input"
@@ -117,10 +117,10 @@ const Signup = () => {
               value={formData.lastName}
               onChange={handleOnChange}
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-            <Form.Label>User Role: </Form.Label>
-            <Form.Control
+          </div>
+          <div className="mb-3">
+            <label>User Role: </label>
+            <input
               type="text"
               placeholder="Enter Your Role"
               className="input"
@@ -128,10 +128,10 @@ const Signup = () => {
               value={formData.role}
               onChange={handleOnChange}
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
+          </div>
+          <div className="mb-3">
+            <label>Email address</label>
+            <input
               type="email"
               placeholder="name@example.com"
               className="input"
@@ -139,10 +139,10 @@ const Signup = () => {
               value={formData.email}
               onChange={handleOnChange}
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput5">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
+          </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input
               type="password"
               placeholder="Enter Password"
               className="input"
@@ -150,10 +150,10 @@ const Signup = () => {
               value={formData.password}
               onChange={handleOnChange}
             />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput6">
-            <Form.Label className="text-sm">Confirm Password</Form.Label>
-            <Form.Control
+          </div>
+          <div className="mb-3">
+            <label className="text-sm">Confirm Password</label>
+            <input
               type="password"
               placeholder="Enter Confirm Password"
               className="input"
@@ -161,7 +161,7 @@ const Signup = () => {
               value={formData.confirmPassword}
               onChange={handleOnChange}
             />
-          </Form.Group>
+          </div>
           <button type="submit" className="button" disabled={loading}>
             {loading ? "Signing up...." : "Sign Up"}
           </button>
