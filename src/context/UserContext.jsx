@@ -1,7 +1,15 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../../firebaseConfig";
-import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
@@ -15,7 +23,7 @@ export const UserProvider = ({ children }) => {
     taskDate: "",
   });
   const [taskList, setTaskList] = useState([]);
-
+  const [editTaskId, setEditTaskId] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const openModal = () => {
     setIsOpenModal(true);
@@ -72,6 +80,49 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     getTasks();
   }, []);
+
+  const deleteTaskId = async (id) => {
+    try {
+      await deleteDoc(doc(db, "tasks", id));
+      getTasks();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  const startEditTask = (task) => {
+    setIsOpenModal(true);
+    setEditTaskId(task.id);
+    setTaskData({
+      taskTitle: task.taskTitle,
+      assignedTo: task.assignedTo,
+      taskStatus: task.taskStatus,
+      taskDate: task.taskDate,
+      level: task.level,
+    });
+  };
+
+  const updateTask = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const taskRef = doc(db, "tasks", editTaskId);
+      await updateDoc(taskRef, taskData);
+      getTasks();
+      closeModal();
+      setEditTaskId(null);
+      setTaskData({   // Clear input fields
+        taskTitle: "",
+        assignedTo: "",
+        taskStatus: "",
+        taskDate: "",
+        level: "",
+      });
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+    setLoading(false);
+  };
   return (
     <UserContext.Provider
       value={{
@@ -84,6 +135,11 @@ export const UserProvider = ({ children }) => {
         closeModal,
         taskList,
         createTask,
+        deleteTaskId,
+        startEditTask,
+        updateTask,
+        editTaskId
+
       }}
     >
       {children}

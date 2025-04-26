@@ -2,11 +2,18 @@ import React from "react";
 import { Context } from "../../context/userContext";
 
 const AddTask = () => {
-  const { taskData, handleOnChange, loading, createTask } = Context();
+  const {
+    taskData,
+    handleOnChange,
+    loading,
+    createTask,
+    updateTask,
+    editTaskId,
+  } = Context();
   return (
     <div>
-      <h1>Add Task</h1>
-      <form className="" onSubmit={createTask}>
+      <h1>{editTaskId ? "Edit Task" : "Add Task"}</h1>
+      <form className="" onSubmit={editTaskId ? updateTask : createTask}>
         <div className="mb-3">
           <label>Task Title</label>
           <input
@@ -63,7 +70,13 @@ const AddTask = () => {
           />
         </div>
         <button type="submit" className="button" disabled={loading}>
-          {loading ? "Adding...." : "Add Task"}
+          {loading
+            ? editTaskId
+              ? "Updating..."
+              : "Adding...."
+            : editTaskId
+            ? "Update Task"
+            : "Add Task"}
         </button>
       </form>
     </div>

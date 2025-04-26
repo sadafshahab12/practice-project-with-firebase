@@ -6,7 +6,14 @@ import { FaTrash } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 
 const Tasks = () => {
-  const { isOpenModal, openModal, closeModal, taskList } = Context();
+  const {
+    isOpenModal,
+    openModal,
+    closeModal,
+    taskList,
+    deleteTaskId,
+    startEditTask,
+  } = Context();
   return (
     <div>
       <div className="flex-center justify-between">
@@ -42,8 +49,14 @@ const Tasks = () => {
               <p>Date: {task.taskDate}</p>
               <p>Level: {task.level}</p>
               <div className="flex-center gap-3">
-                <FaTrash className="cursor-pointer" />
-                <FiEdit className="cursor-pointer" />
+                <FaTrash
+                  className="cursor-pointer"
+                  onClick={() => deleteTaskId(task.id)}
+                />
+                <FiEdit
+                  className="cursor-pointer"
+                  onClick={() => startEditTask(task)}
+                />
               </div>
             </div>
           ))
