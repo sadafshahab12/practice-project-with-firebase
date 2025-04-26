@@ -31,7 +31,7 @@ const Login = () => {
       );
       console.log(`Login success: ${userCred.user}`);
       toast.success("Logged in successfully!");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
       toast.error("Login failed. Check credentials!");

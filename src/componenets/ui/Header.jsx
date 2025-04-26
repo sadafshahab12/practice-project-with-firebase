@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 const Header = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -22,16 +24,17 @@ const Header = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.log("Logout Error", error);
+    }
+  };
   return (
-    <div className="grid grid-cols-3 items-center">
-      <div className=" flex items-center gap-3">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/906/906334.png"
-          alt="task"
-          className="w-10 h-10"
-        />
-        <h1>Todo</h1>
-      </div>
+    <div className="grid grid-cols-2 items-center px-10 py-4">
       <div>
         <input
           type="text"
@@ -45,7 +48,9 @@ const Header = () => {
         ) : userInfo ? (
           <div className="flex justify-end items-center gap-6">
             <p>{userInfo.firstName}</p>
-            <button className="button w-auto">Logout</button>
+            <button className="button w-auto" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         ) : (
           <p>No User</p> // login nahi to No User
